@@ -676,7 +676,6 @@ ensureDomLoaded(()=>{
 		document.querySelectorAll("a[href]").forEach(e=>e.href+="#ignoreCrowdBypass")
 	}
 	domainBypass(/^((www\.)?(file(factory|-upload)\.com|up-load\.io|cosmobox\.org|rockfile\.co))$/,()=>insertInfoBox("{{msg.infoFileHoster}}"))
-	domainBypass(/linkvertise\.(com|net)|link-to\.net/,()=>insertInfoBox(UNIVERSAL_BYPASS_INTERNAL_VERSION>=9?"{{msg.infoLinkvertise}}":"We're not allowed to bypass this website but we have negotiated the removal of their most annoying steps."))
 	domainBypass(/adfoc\.us|ads\.bdcraft\.net/,()=>ifElement(".skip[href]",b=>safelyNavigate(b.href)))
 	domainBypass("srt.am",()=>{
 		if(document.querySelector(".skip-container"))
@@ -812,6 +811,47 @@ ensureDomLoaded(()=>{
 		f=document.documentElement.appendChild(f)
 		countIt(()=>f.submit())
 	})
+	domainBypass(/linkvertise\.(com|net)|link-to\.net/,()=>{
+	let o={timestamp:new Date().getTime(),random:"375123"},
+	url="https://linkvertise.net/api/v1/redirect/link/static"+location.pathname
+	fetch(url).then(r=>r.json()).then(json=>{
+		if(json&&json.data.link.id)
+		{
+			o.link_id=json.data.link.id
+			url="https://linkvertise.net/api/v1/redirect/link"+location.pathname+"/target?serial="+btoa(JSON.stringify(o))
+		}
+	}).then(()=>fetch(url)).then(r=>r.json()).then(json=>{
+		if(json&&json.data.target)
+		{
+			safelyNavigate(json.data.target)
+		}
+	})
+	window.setTimeout=f=>setTimeout(f,1)
+	window.setInterval=f=>setInterval(f,1)
+	window.videojs={getAllPlayers:()=>[{
+		on:(e,f)=>f(),
+		controlBar:{
+			progressControl:{
+				disable:()=>{}
+			}
+		},
+		pause:()=>{}
+	}]}
+	ensureDomLoaded(()=>{
+		setInterval(()=>{
+			ifElement(".modal.show .web-close-btn",b=>b.click())
+		},1000)
+		setTimeout(()=>{
+			document.querySelectorAll(".todo-block .todo").forEach(d=>d.click())
+			setTimeout(()=>ifElement(".todo-btn-nr",b=>{
+				b.click()
+				setTimeout(()=>ifElement(".btn.countdown-btn.first",a=>{
+					countIt(()=>a.click())
+				}),100)
+			}),2000)
+		},2000)
+	})
+})
 	domainBypass(/goou\.in|manualsbooks\.com/,()=>ifElement("div#download_link > a#download[href]",a=>safelyNavigate(a.href)))
 	domainBypass("ryn.cc",()=>{
 		if(typeof countdown=="function")
