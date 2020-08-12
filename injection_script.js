@@ -656,6 +656,10 @@ domainBypass("an1.com",()=>{
 	window.setTimeout=f=>setTimeout(f,1)
 	awaitElement("#waiting > a", a=>a.click())
 })
+hrefBypass(/online-fix\.me\/ext\//,()=>{
+	window.setTimeout=f=>setTimeout(f,1)
+	awaitElement("#res > center > button.btn[onclick]",b=>b.onclick())
+})
 //Insertion point for bypasses running before the DOM is loaded.
 domainBypass(/^((www\.)?((njiir|healthykk|linkasm|dxdrive|getwallpapers|sammobile|ydfile)\.com|(punchsubs|zedge)\.net|k2s\.cc|muhammadyoga\.me|u\.to|skiplink\.io|(uploadfree|freeupload)\.info|fstore\.biz))$/,()=>window.setInterval=f=>setInterval(f,1))
 hrefBypass(/thesimsresource\.com\/downloads\/details\/id\//,()=>window.setTimeout=f=>setTimeout(f,1))
@@ -1111,7 +1115,7 @@ ensureDomLoaded(()=>{
 	hrefBypass(/stayonline\.pro\/l\/(.*)\//,m=>$.post(endpoint,{id:m[1],ref:""},r=>safelyNavigate(r.data.value)))
 	domainBypass("xlink.cc",()=>safelyNavigate(JSON.parse(atob(window.bootstrapData)).linkResponse.link.long_url))
 	domainBypass("1shortlink.com",()=>awaitElement("#redirect-link[data-href]",a=>safelyNavigate(a.getAttribute("data-href"))))
-	domainBypass("multiup.org",()=>ifElement("form[target][onsubmit] button[type='submit']",b=>{
+	domainBypass(/multiup\.(org|eu)/,()=>ifElement("form[target][onsubmit] button[type='submit']",b=>{
 		if(!document.querySelector(".g-recaptcha"))
 		{
 			const f=document.querySelector("form[target][onsubmit]")
@@ -1507,7 +1511,7 @@ ensureDomLoaded(()=>{
 		})
 		if(typeof jQuery=="function")
 		{
-			jQuery(document).off("click",".box.download a")
+			jQuery(document).off("click")
 		}
 	})
 	domainBypass("channelmyanmar.org",()=>document.querySelectorAll("a[href^='https://channelmyanmar.org?1c17f28bf0=']").forEach(a=>{
