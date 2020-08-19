@@ -950,7 +950,7 @@ ensureDomLoaded(()=>{
 		document.querySelector("#captchaVerifiedStatus").click()
 		doTheThing(()=>doTheThing(()=>doTheThing(()=>document.querySelector("#template-contactform-submit").click())))
 	})
-	domainBypass(/^((www\.)?(((get-click2|informations-library|media-blue|akashirohige|aibouanimelink|wwwfotografgotlin)\.blogspot|business\.ominfoupdate|majidzhacker|citgratis|tekloggers|pro-bangla|ph\.(apps2app|samapkstore))\.com|pastikan\.me|ph\.tpaste\.net|(blog\.infolanjutan|jkoding)\.xyz|(safe\.onbatch\.my|google-playss\.sdetectives)\.id|jackofnine\.site))$/,()=>{
+	domainBypass(/^((www\.)?(((get-click2|informations-library|media-blue|akashirohige|aibouanimelink|wwwfotografgotlin)\.blogspot|business\.ominfoupdate|majidzhacker|citgratis|tekloggers|pro-bangla|ph\.(apps2app|samapkstore)|blog\.(hulblog|omgmusik|omglyrics))\.com|pastikan\.me|ph\.tpaste\.net|(blog\.infolanjutan|jkoding)\.xyz|(safe\.onbatch\.my|google-playss\.sdetectives)\.id|jackofnine\.site))$/,()=>{
 		let u=aesCrypto.decrypt(convertstr(location.href.substr(location.href.indexOf("?o=")+3)),convertstr("root"))
 		if(isGoodLink(u))
 		{
@@ -1445,7 +1445,7 @@ ensureDomLoaded(()=>{
 	}))
 	domainBypass("favpng.com",()=>ifElement("div#countdown",()=>safelyNavigate("https://files.favpng.com/api_download.php?k="+location.pathname.substr(14))))
 	domainBypass("sh.st",()=>ifElement("[data-translate='block_headline']",()=>location.hostname="ceesty.com"))
-	domainBypass("gestyy.com",()=>{
+	domainBypass(/(ceesty|corneey|destyy|festyy|gestyy)\.com|viid\.me/,()=>{
 		if(typeof postCaptchaResponse=="function")
 		{
 			postCaptchaResponse(location.href,"")
@@ -1527,9 +1527,22 @@ ensureDomLoaded(()=>{
 		}
 		if(document.querySelectorAll(".box-inner-block a[href*='?']").length==0)
 		{
-			let e=document.querySelector(".box-inner-block").lastElementChild,o=window.open,c=""
-			e=(e.tagName=="BR"?e.previousElementSibling:e).tagName.toLowerCase()
+			let e=document.querySelector(".box-inner-block").lastElementChild,o=window.open,ce=document.createElement,c=""
+			while(e&&(e.tagName=="BR"||e.tagName=="A"))
+			{
+				e=e.previousElementSibling
+			}
+			e=e.tagName.toLowerCase()
 			window.open=(u,t)=>(u+=c,o.call(window,u,t))
+			document.createElement=(t,o)=>{
+				let el=ce.call(document,t,o)
+				if(t=="a")
+				{
+					let cl=el.click
+					el.click=()=>(el.href+=c,cl.call(el))
+				}
+				return el
+			}
 			document.querySelectorAll(e).forEach(a=>{
 				a.onclick=()=>{
 					let qe=a.previousElementSibling,s=""
