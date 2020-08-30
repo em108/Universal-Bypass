@@ -474,8 +474,11 @@ domainBypass(/wadooo\.com|gotravelgo\.space|pantauterus\.me|liputannubi\.net/,()
 	crowdPath(location.hash.substr(1))
 	crowdBypass()
 })
-domainBypass("lnk.news",()=>ifElement("#skip_form",f=>goToUrl(),()=>ifElement("#display_go_form",f=>{
-	countIt(()=>f.submit())
+domainBypass("lnk.news",()=>ifElement("#display_go_form",f=>{
+	window.open=()=>{}
+},()=>ifElement("#skip_form",()=>{
+	Math.random=()=>1
+	setTimeout(()=>$("#skip_form").trigger("submit"),50)
 })))
 hrefBypass(/(uiz\.(io|app)|moon7\.xyz)\/go/,()=>{
 	Object.freeze(location)
@@ -1073,8 +1076,8 @@ ensureDomLoaded(()=>{
 			safelyNavigate(o.page.url)
 		}
 	})
-	hrefBypass(/mirrorace\.com\/m\/[a-zA-Z0-9]+\/[0-9]+/,()=>safelyAssign(document.querySelector("a[href*='"+location.search+"']:not([hidden]):not(.uk-hidden)").href))
-	domainBypass("mirrorace.com",()=>{
+	hrefBypass(/mirrorace\.(com|org)\/m\/[a-zA-Z0-9]+\/[0-9]+/,()=>safelyAssign(document.querySelector("a[href*='"+location.search+"']:not([hidden]):not(.uk-hidden)").href))
+	domainBypass(/mirrorace\.(com|org)/,()=>{
 		ifElement(".uk-modal-close",b=>{
 			if(b.textContent=="I have a VPN already")
 			{
@@ -1440,7 +1443,7 @@ ensureDomLoaded(()=>{
 	}))
 	domainBypass("favpng.com",()=>ifElement("div#countdown",()=>safelyNavigate("https://files.favpng.com/api_download.php?k="+location.pathname.substr(14))))
 	domainBypass("sh.st",()=>ifElement("[data-translate='block_headline']",()=>location.hostname="ceesty.com"))
-	domainBypass(/(ceesty|corneey|destyy|festyy|gestyy)\.com|viid\.me/,()=>{
+	domainBypass(/(ceesty|corneey|destyy|festyy|gestyy|clkmein|cllkme|jnw0|xiw34)\.com|(viid|clkme|wiid)\.me/,()=>{
 		if(typeof postCaptchaResponse=="function")
 		{
 			postCaptchaResponse(location.href,"")
@@ -1455,6 +1458,12 @@ ensureDomLoaded(()=>{
 			}
 		})
 	})
+	domainBypass("apkpsp.xyz",()=>ifElement("span#dwto",s=>{
+		window.setInterval=f=>setInterval(f,1)
+		s.click()
+		awaitElement("span#goto > a[href]",a=>safelyNavigate(a.href))
+	}))
+	domainBypass("maukredit.online",()=>document.getElementById("wpsafe-link").children[0].click())
 	//Insertion point for domain-or-href-specific bypasses running after the DOM is loaded. Bypasses here will no longer need to call ensureDomLoaded.
 	if(bypassed)
 	{
@@ -1507,7 +1516,7 @@ ensureDomLoaded(()=>{
 		/*jshint ignore:end*/
 	}
 	domainBypass(/pahe\.(in|me|ph)/,()=>{
-		document.querySelectorAll("a[href*='?']").forEach(a=>{
+		document.querySelectorAll(".box.download a[href*='?']").forEach(a=>{
 			let qe=a.previousElementSibling
 			while(qe&&qe.tagName!="B"&&qe.tagName!="STRONG"&&qe.tagName!="BR")
 			{
@@ -1529,24 +1538,14 @@ ensureDomLoaded(()=>{
 		{
 			jQuery(document).off("click")
 		}
-		if(document.querySelectorAll(".box-inner-block a[href*='?']").length==0)
+		if(document.querySelector(".box-inner-block")&&!document.querySelector(".box-inner-block a[href*='?']"))
 		{
-			let e=document.querySelector(".box-inner-block").lastElementChild,o=window.open,ce=document.createElement,c=""
-			while(e&&(e.tagName=="BR"||e.tagName=="A"))
+			let e=document.querySelector(".box-inner-block").lastElementChild
+			while(e&&e.tagName.length<8)
 			{
 				e=e.previousElementSibling
 			}
 			e=e.tagName.toLowerCase()
-			window.open=(u,t)=>(u+=c,o.call(window,u,t))
-			document.createElement=(t,o)=>{
-				let el=ce.call(document,t,o)
-				if(t=="a")
-				{
-					let cl=el.click
-					el.click=()=>(el.href+=c,cl.call(el))
-				}
-				return el
-			}
 			document.querySelectorAll(e).forEach(a=>{
 				a.onclick=()=>{
 					let qe=a.previousElementSibling,s=""
@@ -1565,7 +1564,7 @@ ensureDomLoaded(()=>{
 						s+=(qe.tagName=="BR"?qe.previousSibling:qe).textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
 					}
 					s+=a.textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
-					c=s
+					document.documentElement.setAttribute("{{channel.bypass_clipboard}}",s)
 				}
 			})
 		}

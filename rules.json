@@ -53,7 +53,8 @@
 		"*://*.creditcable.info/*/*?*",
 		"*://*.adfoc.us/serve/sitelinks/?*",
 		"*://*.made-by.org/redirection/?url=*",
-		"*://*.itsbx.com/redirect/?url=*"
+		"*://*.itsbx.com/redirect/?url=*",
+		"*://*.forocoches.com/link.php?url=*"
 	],
 	"param_xurl_raw_http": [
 		"*://bluemediafiles.com/*?xurl=*"
@@ -198,6 +199,9 @@
 	"param_data_base64": [
 		"*://*.magersari.web.id/?*"
 	],
+	"bypass_clipboard": [
+		"*://*.intercelestial.com/?id=*"
+	],
 	"useragent_googlebot": [
 		"*://*.haaretz.co.il/*",
 		"*://*.ceesty.com/*",
@@ -206,7 +210,13 @@
 		"*://*.festyy.com/*",
 		"*://*.gestyy.com/*",
 		"*://*.sh.st/*",
-		"*://*.viid.me/*"
+		"*://*.viid.me/*",
+		"*://*.clkmein.com/*",
+		"*://*.cllkme.com/*",
+		"*://*.jnw0.com/*",
+		"*://*.xiw34.com/*",
+		"*://*.clkme.me/*",
+		"*://*.wiid.me/*"
 	],
 	"useragent_chrome": [
 		"*://*.fluxteam.xyz/*"
