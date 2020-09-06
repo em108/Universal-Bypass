@@ -13,7 +13,7 @@ transparentProperty=(name,valFunc)=>{
 	})
 },
 isGoodLink=link=>{
-	if(typeof link!="string"||link.split("#")[0]==location.href.split("#")[0]||link.substr(0,6)=="about:"||link.substr(0,11)=="javascript:")//jshint ignore:line
+	if(typeof link!="string"||link.split("#")[0]==location.href.split("#")[0]||link.substr(0,6)=="about:"||link.substr(0,11)=="javascript:")
 	{
 		return false
 	}
@@ -492,7 +492,6 @@ hrefBypass(/(uiz\.(io|app)|moon7\.xyz)\/go/,()=>{
 		const regex=/.*window\.location\.href = "(http[^"]+)";.*/
 		document.querySelectorAll("script").forEach(script=>{
 			let matches=regex.exec(script.textContent)
-			console.log(matches)
 			if(matches&&matches[1])
 			{
 				crowdPath(bypassClipboard)
@@ -1023,7 +1022,13 @@ ensureDomLoaded(()=>{
 		})
 	})
 	domainBypass(/linkpoi\.(in|cc)/,()=>ifElement("a.btn.btn-primary[href]",a=>safelyNavigate(a.href)))
-	domainBypass(/spacetica\.com|linegee\.net/,()=>ifElement("a.btn.btn-xs[href]",a=>safelyNavigate(a.href)))
+	domainBypass(/spacetica\.com|linegee\.net/,()=>ifElement("a.btn.btn-xs[href]",a=>setTimeout(()=>{
+		let matches=/.*location\.href = '(http[^"]+)';.*/.exec($._data(a,"events").click[0].handler)
+		if(matches&&matches[1])
+		{
+			safelyNavigate(matches[1])
+		}
+	},1000)))
 	domainBypass(/uiz\.(io|app)|moon7\.xyz/,()=>crowdBypass(()=>{
 		awaitElement("#go-adsredirect",f=>{
 			f.action+="#bypassClipboard="+location.pathname.substr(1)
@@ -1470,6 +1475,19 @@ ensureDomLoaded(()=>{
 		awaitElement("span#goto > a[href]",a=>safelyNavigate(a.href))
 	}))
 	domainBypass("maukredit.online",()=>document.getElementById("wpsafe-link").children[0].click())
+	domainBypass("ay.link",()=>{
+		var form = $('#go-link')
+		$.ajax({
+				type: 'POST',
+				async: true,
+				url: form.attr('action'),
+				data: form.serialize() + '&token=' + app['token'],
+				dataType: 'json',
+				success: function(data) {
+					safelyNavigate(data.url);
+				}
+		});
+	})
 	//Insertion point for domain-or-href-specific bypasses running after the DOM is loaded. Bypasses here will no longer need to call ensureDomLoaded.
 	if(bypassed)
 	{
@@ -1515,11 +1533,9 @@ ensureDomLoaded(()=>{
 	}
 	for(let domain in soralink_data)
 	{
-		/*jshint ignore:start*/
 		domainBypass(domain,()=>document.querySelectorAll("a[href^='"+location.origin+"?"+soralink_data[domain]+"=']").forEach(a=>{
 			a.href+="#bypassClipboard="+a.href.split("?"+soralink_data[domain]+"=")[1]
 		}))
-		/*jshint ignore:end*/
 	}
 	domainBypass(/pahe\.(in|me|ph)/,()=>{
 		let e=""
