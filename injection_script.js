@@ -13,7 +13,7 @@ transparentProperty=(name,valFunc)=>{
 	})
 },
 isGoodLink=link=>{
-	if(typeof link!="string"||link.split("#")[0]==location.href.split("#")[0]||link.substr(0,6)=="about:"||link.substr(0,11)=="javascript:")
+	if(typeof link!="string"||link.split("#")[0]==location.href.split("#")[0]||link.substr(0,6)=="about:"||link.substr(0,11)=="javascript:"||link.substr(0,28)=="https://google.com/search?q=")
 	{
 		return false
 	}
@@ -1023,8 +1023,13 @@ ensureDomLoaded(()=>{
 	})
 	domainBypass(/linkpoi\.(in|cc)/,()=>ifElement("a.btn.btn-primary[href]",a=>safelyNavigate(a.href)))
 	domainBypass(/spacetica\.com|linegee\.net/,()=>ifElement("a.btn.btn-xs[href]",a=>setTimeout(()=>{
-		$._data(a,"events").click[0].handler({preventDefault:()=>{},originalEvent:{}})
-	},1000)))
+		console.log("but I already know that you want to waste time, that's why this extension was made ;P")
+		let matches=/location\.href *= *'(http[^"]+)';/.exec($._data(a,"events").click[1].handler)
+		if(matches&&matches[1])
+		{
+			safelyNavigate(matches[1])
+		}
+	},0)))
 	domainBypass(/uiz\.(io|app)|moon7\.xyz/,()=>crowdBypass(()=>{
 		awaitElement("#go-adsredirect",f=>{
 			f.action+="#bypassClipboard="+location.pathname.substr(1)
@@ -1484,6 +1489,7 @@ ensureDomLoaded(()=>{
 				}
 		});
 	})
+	domainBypass("forex1pro.com",()=>safelyAssign("https://fx4vip.com"+location.pathname))
 	//Insertion point for domain-or-href-specific bypasses running after the DOM is loaded. Bypasses here will no longer need to call ensureDomLoaded.
 	if(bypassed)
 	{
