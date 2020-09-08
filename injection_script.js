@@ -1023,14 +1023,13 @@ ensureDomLoaded(()=>{
 	})
 	domainBypass(/linkpoi\.(in|cc)/,()=>ifElement("a.btn.btn-primary[href]",a=>safelyNavigate(a.href)))
 	domainBypass(/spacetica\.com|linegee\.net/,()=>setTimeout(()=>{
-		console.log("Honestly, I was just gonna remove your bypass, because this was getting pretty boring, but you're talking big words.")
 		let links=[];
 		document.querySelectorAll("a.btn[href],a.btn-primary[href],a.btn-xs[href]").forEach(a=>{
 			links.push(a.href)
-			let click_handlers=$._data(a,"events").click
-			if(click_handlers)
+			let events=$._data(a,"events")
+			if(events&&"click"in events)
 			{
-				click_handlers.forEach(f=>{
+				events.click.forEach(f=>{
 					const r=/'.*(http[^']+)';/g
 					while(true)
 					{
@@ -1050,7 +1049,7 @@ ensureDomLoaded(()=>{
 		let true_i=-1;
 		for(let i=0;i<links.length;i++)
 		{
-			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1)
+			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1&&!/^https?:\/\/.+\/[0-9a-f]{40}$/.exec(links[i]))
 			{
 				true_i=true_i==-1?i:-2
 			}
