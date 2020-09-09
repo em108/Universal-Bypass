@@ -958,7 +958,7 @@ ensureDomLoaded(()=>{
 		document.querySelector("#captchaVerifiedStatus").click()
 		doTheThing(()=>doTheThing(()=>doTheThing(()=>document.querySelector("#template-contactform-submit").click())))
 	})
-	domainBypass(/^((www\.)?(((get-click2|informations-library|media-blue|akashirohige|aibouanimelink|wwwfotografgotlin)\.blogspot|business\.ominfoupdate|majidzhacker|citgratis|tekloggers|pro-bangla|ph\.(apps2app|samapkstore)|blog\.(hulblog|omgmusik|omglyrics))\.com|pastikan\.me|ph\.tpaste\.net|(blog\.infolanjutan|jkoding)\.xyz|(safe\.onbatch\.my|google-playss\.sdetectives)\.id|jackofnine\.site))$/,()=>{
+	domainBypass(/^((www\.)?(((get-click2|informations-library|media-blue|akashirohige|aibouanimelink|wwwfotografgotlin)\.blogspot|business\.ominfoupdate|majidzhacker|citgratis|tekloggers|pro-bangla|ph\.(apps2app|samapkstore)|blog\.(hulblog|omgmusik|omglyrics))\.com|(pastikan|belajar-bersama2)\.me|ph\.tpaste\.net|(blog\.infolanjutan|jkoding)\.xyz|(safe\.onbatch\.my|google-playss\.sdetectives)\.id|jackofnine\.site))$/,()=>{
 		let u=aesCrypto.decrypt(convertstr(location.href.substr(location.href.indexOf("?o=")+3)),convertstr("root"))
 		if(isGoodLink(u))
 		{
@@ -1508,14 +1508,14 @@ ensureDomLoaded(()=>{
 	domainBypass("ay.link",()=>{
 		var form = $('#go-link')
 		$.ajax({
-				type: 'POST',
-				async: true,
-				url: form.attr('action'),
-				data: form.serialize() + '&token=' + app['token'],
-				dataType: 'json',
-				success: function(data) {
-					safelyNavigate(data.url);
-				}
+			type: 'POST',
+			async: true,
+			url: form.attr('action'),
+			data: form.serialize() + '&token=' + app['token'],
+			dataType: 'json',
+			success: function(data) {
+				safelyNavigate(data.url);
+			}
 		});
 	})
 	domainBypass("forex1pro.com",()=>safelyAssign("https://fx4vip.com"+location.pathname))
@@ -2042,6 +2042,29 @@ ensureDomLoaded(()=>{
 		safelyNavigate(i.value)
 		finish()
 	},()=>domainBypass(/seputarinfomenarik\.com|(massardi|kribboy)\.xyz/,()=>ifElement("a#hapus",a=>safelyAssign(a.href))))
+	domainBypass("oracle.com",()=>document.querySelectorAll("[data-file]").forEach(e=>{
+		//https://gist.github.com/wavezhang/ba8425f24a968ec9b2a8619d7c2d86a6#gistcomment-3377085
+		let link=e.getAttribute("data-file"),
+		jre8=RegExp("download.oracle.com/otn/java/jdk/8u([0-9]*)-b([0-9]*)/([a-z0-9]{32})/(.*)$","g").exec(link)
+		if(jre8&&jre8[3])
+		{
+			os_type=RegExp("8u[0-9]*-([^-]*)-").exec(jre8[4])[1]
+			os_type=(os_type == "macosx")?"unix":os_type
+			e.onclick=()=>safelyNavigate("https://javadl.oracle.com/webapps/download/GetFile/1.8.0_"+jre8[1]+"-b"+jre8[2]+"/"+jre8[3]+"/"+os_type+"-i586/"+jre8[4])
+		}
+	}))
+	domainBypass("genlink.cc",()=>{
+		$(".check-ad").append("<input name='step' value=2 type='hidden'>")
+		let b=$(".real-link")
+		if(b.attr("href"))
+		{
+			safelyNavigate(b.attr("href"))
+		}
+		else
+		{
+			b.click()
+		}
+	})
 	//Insertion point for bypasses detecting certain DOM elements. Bypasses here will no longer need to call ensureDomLoaded.
 	let t=document.querySelector("title")
 	if(!bypassed&&t)
