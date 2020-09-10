@@ -1049,7 +1049,7 @@ ensureDomLoaded(()=>{
 		let true_i=-1;
 		for(let i=0;i<links.length;i++)
 		{
-			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1&&!/^https?:\/\/.+\/[0-9a-f]{40,41}$/.exec(links[i]))
+			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1&&!/^https?:\/\/.+\/[0-9a-f]{40,}$/.exec(links[i]))
 			{
 				true_i=true_i==-1?i:-2
 			}
@@ -1519,6 +1519,13 @@ ensureDomLoaded(()=>{
 		});
 	})
 	domainBypass("forex1pro.com",()=>safelyAssign("https://fx4vip.com"+location.pathname))
+	domainBypass("sub4unlock.com",()=>{
+		if(typeof fun2=="function")
+		{
+			window.open=safelyNavigate
+			fun2()
+		}
+	})
 	//Insertion point for domain-or-href-specific bypasses running after the DOM is loaded. Bypasses here will no longer need to call ensureDomLoaded.
 	if(bypassed)
 	{
