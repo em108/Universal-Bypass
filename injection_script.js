@@ -84,10 +84,10 @@ safelyAssign=target=>{
 },
 finish=()=>{
 	bypassed=true
-	document.documentElement.setAttribute("{{channel.stop_watching}}","")
+	docSetAttribute("{{channel.stop_watching}}","")
 },
 countIt=f=>{
-	document.documentElement.setAttribute("{{channel.count_it}}","")
+	docSetAttribute("{{channel.count_it}}","")
 	setTimeout(f,10)
 },
 domainBypass=(domain,f)=>{
@@ -179,16 +179,22 @@ awaitElement=(q,f)=>ensureDomLoaded(()=>{
 	},10)
 	setInterval(()=>clearInterval(t),30000)
 }),
+crowdDomain=d=>{
+	if(crowdEnabled&&d)
+	{
+		docSetAttribute("{{channel.crowd_domain}}",d)
+	}
+},
 crowdPath=p=>{
 	if(crowdEnabled&&p)
 	{
-		document.documentElement.setAttribute("{{channel.crowd_path}}",p)
+		docSetAttribute("{{channel.crowd_path}}",p)
 	}
 },
 crowdReferer=r=>{
 	if(r)
 	{
-		document.documentElement.setAttribute("{{channel.crowd_referer}}",r)
+		docSetAttribute("{{channel.crowd_referer}}",r)
 	}
 },
 crowdBypass=(f,a)=>{
@@ -204,7 +210,7 @@ crowdBypass=(f,a)=>{
 		}
 		else
 		{
-			document.documentElement.setAttribute("{{channel.crowd_query}}","")
+			docSetAttribute("{{channel.crowd_query}}","")
 			let iT=setInterval(()=>{
 				if(document.documentElement.hasAttribute("{{channel.crowd_queried}}"))
 				{
@@ -232,7 +238,7 @@ crowdContribute=(target,f)=>{
 	}
 	if(crowdEnabled&&isGoodLink(target))
 	{
-		document.documentElement.setAttribute("{{channel.crowd_contribute}}",target)
+		docSetAttribute("{{channel.crowd_contribute}}",target)
 		setTimeout(f,10)
 	}
 	else
@@ -257,7 +263,7 @@ insertInfoBox=text=>ensureDomLoaded(()=>{
 	div.onclick=()=>document.body.removeChild(div)
 	document.body.appendChild(div)
 }),
-clipboard=c=>{
+backgroundScriptBypassClipboard=c=>{
 	if(c)
 	{
 		docSetAttribute("{{channel.bypass_clipboard}}",c)
@@ -668,6 +674,38 @@ hrefBypass(/online-fix\.me\/ext\//,()=>{
 	window.setTimeout=f=>setTimeout(f,1)
 	awaitElement("#res > center > button.btn[onclick]",b=>b.onclick())
 })
+domainBypass(/pahe\.(in|me|ph)/,()=>{
+	let _addEventListener=window.addEventListener
+	window.addEventListener=(e,f)=>{
+		if(e=="load"&&f.toString().indexOf("[n*15];")!==-1)
+		{
+			_addEventListener(e,()=>eval("("+f.toString().split("[n*15];").join("[n*15]+'#bypassClipboard='+event.target.getAttribute('data-bypass-clipboard')")+")()"))
+		}
+		else
+		{
+			_addEventListener(e,f)
+		}
+	}
+	ensureDomLoaded(()=>document.querySelectorAll("acee").forEach(a=>{
+		let s=location.pathname.replace(/[^a-zA-Z0-9]/g,""),
+		ep=a.parentNode.querySelector("span[style] > b")
+		if(ep!==null)
+		{
+			s+=ep.textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
+		}
+		qe=a.previousElementSibling
+		while(qe&&qe.tagName!="B"&&qe.tagName!="STRONG"&&qe.tagName!="BR")
+		{
+			qe=qe.previousElementSibling
+		}
+		if(qe!==null)
+		{
+			s+=(qe.tagName=="BR"?qe.previousSibling:qe).textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
+		}
+		s+=a.textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
+		a.setAttribute("data-bypass-clipboard",s)
+	}))
+})
 //Insertion point for bypasses running before the DOM is loaded.
 domainBypass(/^((www\.)?((njiir|healthykk|linkasm|dxdrive|getwallpapers|sammobile|ydfile)\.com|(punchsubs|zedge|fex)\.net|k2s\.cc|muhammadyoga\.me|u\.to|skiplink\.io|(uploadfree|freeupload)\.info|fstore\.biz))$/,()=>window.setInterval=f=>setInterval(f,1))
 hrefBypass(/thesimsresource\.com\/downloads\/details\/id\//,()=>window.setTimeout=f=>setTimeout(f,1))
@@ -1049,7 +1087,7 @@ ensureDomLoaded(()=>{
 		let true_i=-1;
 		for(let i=0;i<links.length;i++)
 		{
-			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1&&!/^https?:\/\/.+\/[0-9a-f]{40,}$/.exec(links[i]))
+			if(links[i].indexOf("google.com/search")==-1&&links[i].indexOf("/404")==-1&&!/^https?:\/\/.+\/[0-9a-f]{40,}$/i.exec(links[i]))
 			{
 				true_i=true_i==-1?i:-2
 			}
@@ -1526,6 +1564,33 @@ ensureDomLoaded(()=>{
 			fun2()
 		}
 	})
+	domainBypass("oracle.com",()=>document.querySelectorAll("[data-file]").forEach(e=>{
+		//https://gist.github.com/wavezhang/ba8425f24a968ec9b2a8619d7c2d86a6#gistcomment-3377085
+		let link=e.getAttribute("data-file"),
+		jre8=RegExp("download.oracle.com/otn/java/jdk/8u([0-9]*)-b([0-9]*)/([a-z0-9]{32})/(.*)$","g").exec(link)
+		if(jre8&&jre8[3])
+		{
+			os_type=RegExp("8u[0-9]*-([^-]*)-").exec(jre8[4])[1]
+			os_type=(os_type == "macosx")?"unix":os_type
+			e.onclick=()=>safelyNavigate("https://javadl.oracle.com/webapps/download/GetFile/1.8.0_"+jre8[1]+"-b"+jre8[2]+"/"+jre8[3]+"/"+os_type+"-i586/"+jre8[4])
+		}
+	}))
+	domainBypass("genlink.cc",()=>{
+		$(".check-ad").append("<input name='step' value=2 type='hidden'>")
+		let b=$(".real-link")
+		if(b.attr("href"))
+		{
+			safelyNavigate(b.attr("href"))
+		}
+		else
+		{
+			b.click()
+		}
+	})
+	hrefBypass(/psarips\.(com|net|org|eu|in|one|xyz)\/exit\//,()=>ifElement("form[name='redirect']",f=>{
+		window.stop()
+		safelyAssign(f.action+"#bypassClipboard=psarips:"+location.pathname.substr(6))
+	}))
 	//Insertion point for domain-or-href-specific bypasses running after the DOM is loaded. Bypasses here will no longer need to call ensureDomLoaded.
 	if(bypassed)
 	{
@@ -1575,37 +1640,6 @@ ensureDomLoaded(()=>{
 			a.href+="#bypassClipboard="+a.href.split("?"+soralink_data[domain]+"=")[1]
 		}))
 	}
-	domainBypass(/pahe\.(in|me|ph)/,()=>{
-		let e=""
-		document.querySelectorAll("body *").forEach(a=>{
-			if(a.tagName.length>8)
-			{
-				e=a.tagName.toLowerCase()+","
-			}
-		})
-		e+="a[href*='?']"
-		document.querySelectorAll(e).forEach(a=>{
-			a.onclick=()=>{
-				let qe=a.previousElementSibling,s=""
-				while(qe&&qe.tagName!="B"&&qe.tagName!="STRONG"&&qe.tagName!="BR")
-				{
-					qe=qe.previousElementSibling
-				}
-				s+="#bypassClipboard="+location.pathname.replace(/[^a-zA-Z0-9]/g,"")
-				let ep=a.parentNode.querySelector("span[style] > b")
-				if(ep!==null)
-				{
-					s+=ep.textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
-				}
-				if(qe!==null)
-				{
-					s+=(qe.tagName=="BR"?qe.previousSibling:qe).textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
-				}
-				s+=a.textContent.replace(/[^a-zA-Z0-9]/g,"").toLowerCase()
-				clipboard(s)
-			}
-		})
-	})
 	domainBypass("channelmyanmar.org",()=>document.querySelectorAll("a[href^='https://channelmyanmar.org?1c17f28bf0=']").forEach(a=>{
 		if(a.classList.contains("FLMBTN-Btn"))
 		{
@@ -2049,29 +2083,10 @@ ensureDomLoaded(()=>{
 		safelyNavigate(i.value)
 		finish()
 	},()=>domainBypass(/seputarinfomenarik\.com|(massardi|kribboy)\.xyz/,()=>ifElement("a#hapus",a=>safelyAssign(a.href))))
-	domainBypass("oracle.com",()=>document.querySelectorAll("[data-file]").forEach(e=>{
-		//https://gist.github.com/wavezhang/ba8425f24a968ec9b2a8619d7c2d86a6#gistcomment-3377085
-		let link=e.getAttribute("data-file"),
-		jre8=RegExp("download.oracle.com/otn/java/jdk/8u([0-9]*)-b([0-9]*)/([a-z0-9]{32})/(.*)$","g").exec(link)
-		if(jre8&&jre8[3])
-		{
-			os_type=RegExp("8u[0-9]*-([^-]*)-").exec(jre8[4])[1]
-			os_type=(os_type == "macosx")?"unix":os_type
-			e.onclick=()=>safelyNavigate("https://javadl.oracle.com/webapps/download/GetFile/1.8.0_"+jre8[1]+"-b"+jre8[2]+"/"+jre8[3]+"/"+os_type+"-i586/"+jre8[4])
-		}
-	}))
-	domainBypass("genlink.cc",()=>{
-		$(".check-ad").append("<input name='step' value=2 type='hidden'>")
-		let b=$(".real-link")
-		if(b.attr("href"))
-		{
-			safelyNavigate(b.attr("href"))
-		}
-		else
-		{
-			b.click()
-		}
-	})
+	if(typeof megabux=="object"&&"link"in megabux)//acortaz.com#1460
+	{
+		safelyNavigate(megabux.link)
+	}
 	//Insertion point for bypasses detecting certain DOM elements. Bypasses here will no longer need to call ensureDomLoaded.
 	let t=document.querySelector("title")
 	if(!bypassed&&t)
@@ -2170,7 +2185,7 @@ ensureDomLoaded(()=>{
 				},()=>crowdPath(location.hash.substr(1))))
 			})
 			domainBypass(/(atv|adlink)\.pw|safe\.mirrordown\.com|kabarviral\.blog/,()=>crowdPath(location.search.substr(1).split("=")[0]))
-			document.documentElement.setAttribute("{{channel.adlinkfly_info}}","")
+			docSetAttribute("{{channel.adlinkfly_info}}","")
 			let iT=setInterval(()=>{
 				if(document.documentElement.hasAttribute("{{channel.adlinkfly_target}}"))
 				{
@@ -2178,6 +2193,11 @@ ensureDomLoaded(()=>{
 					let t=document.documentElement.getAttribute("{{channel.adlinkfly_target}}")
 					if(t=="")
 					{
+						if(UNIVERSAL_BYPASS_INTERNAL_VERSION>=10&&bypassClipboard.substr(0,8)=="psarips:")
+						{
+							crowdDomain("psarips.com")
+							crowdPath("/exit/"+bypassClipboard.substr(8))
+						}
 						crowdBypass(()=>{
 							let cT=setInterval(()=>{
 								let a=document.querySelector("a.get-link[href]:not([href='']):not([href*='.ads.']):not([href*='//ads.']):not(.disabled), .skip-ad a[href]:not([href='']):not([href*='.ads.']):not([href*='//ads.'])"),h
