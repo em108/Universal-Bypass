@@ -1546,7 +1546,7 @@ ensureDomLoaded(()=>{
 		awaitElement("span#goto > a[href]",a=>safelyNavigate(a.href))
 	}))
 	domainBypass("maukredit.online",()=>document.getElementById("wpsafe-link").children[0].click())
-	domainBypass("ay.link",()=>{
+	domainBypass(/ay\.link|(shtms|aylink)\.co/,()=>{
 		var form = $('#go-link')
 		$.ajax({
 			type: 'POST',
