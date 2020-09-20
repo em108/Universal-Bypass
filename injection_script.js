@@ -1506,10 +1506,10 @@ ensureDomLoaded(()=>{
 		ifElement("form[id='1']",f=>f.submit())
 		bypassed=false
 	})
-	domainBypass(/(fcdot|fcc)\.lc/,()=>ifElement("form#form",()=>{
+	domainBypass(/(fcdot|fcc)\.lc|fc-lc\.com/,()=>ifElement("form#form",()=>{
 		window.setInterval=f=>setInterval(f,100)
 		ifElement(".btn-captcha",b=>setTimeout(()=>b.parentNode.submit(),3000),()=>awaitElement("a#surl[href]:not(.disabled)",a=>safelyNavigate(a.href)))
-	}))
+	},()=>ifElement("form#submit_data",f=>f.submit())))
 	domainBypass("dl.helow.id",()=>ifElement("button#btn6",b=>b.onclick()))
 	domainBypass("dl.ocanoke.com",()=>{
 		crowdPath(location.pathname.split("/").pop())
@@ -2097,6 +2097,16 @@ ensureDomLoaded(()=>{
 	{
 		safelyNavigate(megabux.link)
 	}
+	//dl.ccbluex.net
+	domainBypass("dl.ccbluex.net",()=>{
+		if(location.pathname.substring(0,6)=="/skip/")
+		{
+			ifElement("div.top-bar #skip-button",b=>{
+				b.disabled=false
+				b.click()
+			},()=>location.reload())
+		}
+	})
 	//Insertion point for bypasses detecting certain DOM elements. Bypasses here will no longer need to call ensureDomLoaded.
 	let t=document.querySelector("title")
 	if(!bypassed&&t)
