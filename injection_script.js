@@ -382,13 +382,16 @@ ODP(window,"safelink",
 		return actual_safelink
 	}
 })
-for(let key in forced_safelink)
+if(typeof safelink!="undefined")
 {
-	ODP(safelink,key,
+	for(let key in forced_safelink)
 	{
-		writable:false,
-		value:forced_safelink[key]
-	})
+		ODP(safelink,key,
+		{
+			writable:false,
+			value:forced_safelink[key]
+		})
+	}
 }
 //Soralink Wordpress Plugin
 ODP(window,"soralink",{
@@ -1265,11 +1268,19 @@ ensureDomLoaded(()=>{
 		{
 			crowdPath(location.pathname.substr(4))
 		}
-		fetch(f.action,{
+		let s=()=>fetch(f.action,{
 			method:"POST",
 			headers:{"Content-Type":"application/x-www-form-urlencoded"},
 			body:new URLSearchParams(new FormData(f)).toString()
 		}).then(r=>contributeAndNavigate(r.headers.get("refresh").split("url=")[1]))
+		if(f.querySelector("input[name='g-recaptcha-response']"))
+		{
+			awaitElement("form[action*='/redirect/sgo/'] > input[name='g-recaptcha-response'][value]",s)
+		}
+		else
+		{
+			s()
+		}
 	},()=>crowdBypass()))
 	domainBypass("brpaper.com",()=>safelyNavigate(location.href.replace("downloads","downloader")))
 	domainBypass("boo.tw",()=>ifElement("div#shorturl-go",d=>{
